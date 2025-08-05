@@ -1,0 +1,2034 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>800m 4-Week Training Block Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+  <style>
+    :root {
+      --bg-primary: #e6f2ff;
+      --bg-secondary: #f0f8ff;
+      --shadow-light: #ffffff;
+      --shadow-dark: #c8d8e8;
+      --text-primary: #2c3e50;
+      --text-secondary: #5a6c7d;
+      --accent-blue: #3498db;
+      --accent-green: #2ecc71;
+      --accent-orange: #f39c12;
+      --accent-red: #e74c3c;
+    }
+
+    body {
+      padding-top: 2rem;
+      background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-primary);
+    }
+
+    .container {
+      max-width: 1200px;
+    }
+
+    /* Neumorphism Cards */
+    .neomorph-card {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+      border: none;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .neomorph-card:hover {
+      box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+    }
+
+    /* Equal height cards for profile section */
+    .profile-row {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .profile-row .col-md-6 {
+      display: flex;
+      flex: 1;
+      max-width: 50%;
+    }
+
+    .profile-row .neomorph-card {
+      width: 100%;
+    }
+
+    .neomorph-inset {
+      background: var(--bg-secondary);
+      border-radius: 15px;
+      box-shadow: inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Buttons */
+    .neomorph-btn {
+      background: var(--bg-secondary);
+      border: none;
+      border-radius: 15px;
+      padding: 12px 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+      transition: all 0.2s ease;
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .neomorph-btn:hover {
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      transform: translateY(-2px);
+      color: var(--text-primary);
+    }
+
+    .neomorph-btn:active {
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      transform: translateY(0);
+    }
+
+    .neomorph-btn.primary {
+      background: linear-gradient(135deg, var(--accent-blue), #5dade2);
+      color: white;
+    }
+
+    .neomorph-btn.success {
+      background: linear-gradient(135deg, var(--accent-green), #58d68d);
+      color: white;
+    }
+
+    /* Form Controls */
+    .neomorph-input {
+      background: var(--bg-secondary);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+      color: var(--text-primary);
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .neomorph-input:focus {
+      outline: none;
+      box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+      background: var(--bg-primary);
+    }
+
+    /* Generic Table Styling - for smaller tables */
+    .neomorph-table {
+      background: var(--bg-secondary);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+      border: none;
+    }
+
+    .neomorph-table th {
+      background: linear-gradient(135deg, var(--text-primary), #34495e);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-weight: 600;
+    }
+
+    .neomorph-table td {
+      border: none;
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(200, 216, 232, 0.3);
+    }
+
+    /* Pace Table Styling */
+    .pace-table {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      border: none;
+      margin: 0;
+    }
+
+    .pace-table thead th {
+      background: linear-gradient(135deg, var(--accent-blue), #5dade2);
+      color: white;
+      border: none;
+      padding: 12px 15px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .pace-table thead th:first-child {
+      border-top-left-radius: 12px;
+    }
+
+    .pace-table thead th:last-child {
+      border-top-right-radius: 12px;
+    }
+
+    .pace-table tbody td {
+      border: none;
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(200, 216, 232, 0.2);
+      background: var(--bg-secondary);
+    }
+
+    .pace-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .pace-table tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 12px;
+    }
+
+    /* Plan Table Styling - Main training plan table */
+    .plan-table {
+      background: var(--bg-secondary);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+      border: none;
+      margin: 0;
+      width: 100%;
+    }
+
+    .plan-table thead th {
+      background: linear-gradient(135deg, var(--text-primary), #34495e);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+
+    .plan-table thead th:first-child {
+      border-top-left-radius: 15px;
+    }
+
+    .plan-table thead th:last-child {
+      border-top-right-radius: 15px;
+    }
+
+    .plan-table tbody td,
+    .plan-table tfoot td {
+      border: none;
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(200, 216, 232, 0.2);
+      background: var(--bg-secondary);
+      vertical-align: middle;
+    }
+
+    .plan-table tbody tr:not(.week-header):not(.table-secondary) td {
+      background: var(--bg-secondary);
+    }
+
+    .plan-table .week-header td {
+      background: linear-gradient(135deg, var(--text-primary), #34495e) !important;
+      color: white !important;
+      font-weight: bold;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .plan-table .table-secondary td {
+      background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary)) !important;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(200, 216, 232, 0.3);
+    }
+
+    .plan-table .totals td {
+      background: linear-gradient(135deg, var(--text-primary), #34495e) !important;
+      color: white !important;
+      font-weight: 700;
+      border-bottom: none;
+    }
+
+    .plan-table tfoot tr:last-child td:first-child {
+      border-bottom-left-radius: 15px;
+    }
+
+    .plan-table tfoot tr:last-child td:last-child {
+      border-bottom-right-radius: 15px;
+    }
+
+    /* Override table-responsive to not interfere with shadows */
+    .table-responsive {
+      overflow: visible;
+      border-radius: 15px;
+    }
+
+    .btn-space {
+      margin-right: .5rem
+    }
+
+    .plan-table .high td {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .plan-table .moderate td {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .plan-table .low td {
+      background: var(--bg-secondary) !important;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Hard session cell highlighting */
+    .plan-table .hard-session {
+      background: linear-gradient(135deg, #ffe6e6, #ffcccc) !important;
+      color: var(--accent-red) !important;
+      font-weight: 600 !important;
+      border-radius: 8px;
+      margin: 2px;
+      padding: 10px !important;
+    }
+
+    .totals td {
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    }
+
+    .metric-card {
+      margin-bottom: 1rem
+    }
+
+    .zone-info {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .week-header {
+      background: linear-gradient(135deg, var(--text-primary), #34495e);
+      color: white;
+      font-weight: bold;
+    }
+
+    .week-header td {
+      color: white !important;
+    }
+
+    #mileageChart {
+      max-height: 300px;
+      background: var(--bg-secondary);
+      border-radius: 15px;
+      padding: 1rem;
+      box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+    }
+
+    /* Title Styling */
+    h1 {
+      color: var(--text-primary);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h5 {
+      color: var(--text-primary);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Workout Name Clickable Styling */
+    .workout-name {
+      cursor: pointer;
+      color: var(--accent-blue);
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-radius: 8px;
+      padding: 4px 8px;
+      display: inline-block;
+    }
+
+    .workout-name:hover {
+      background: rgba(52, 152, 219, 0.1);
+      color: var(--accent-blue);
+      text-decoration: none;
+      transform: scale(1.02);
+    }
+
+    /* Modal Styling */
+    .modal-content {
+      background: var(--bg-secondary);
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-backdrop {
+      background-color: rgba(44, 62, 80, 0.3) !important;
+      backdrop-filter: none !important;
+    }
+
+    .modal-backdrop.show {
+      opacity: 0.3 !important;
+    }
+
+    .modal-header {
+      border-bottom: 1px solid rgba(200, 216, 232, 0.3);
+      border-radius: 20px 20px 0 0;
+    }
+
+    .modal-footer {
+      border-top: 1px solid rgba(200, 216, 232, 0.3);
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* Modal Table Styling */
+    .modal .table {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      border: none;
+      margin-bottom: 0;
+    }
+
+    .modal .table thead th {
+      background: linear-gradient(135deg, var(--accent-blue), #5dade2);
+      color: white;
+      border: none;
+      padding: 12px 15px;
+      font-weight: 600;
+    }
+
+    .modal .table tbody td {
+      border: none;
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(200, 216, 232, 0.2);
+      background: var(--bg-secondary);
+    }
+
+    .modal .table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Saved Plans List */
+    .saved-plan-item {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .saved-plan-item:hover {
+      box-shadow: 2px 2px 4px var(--shadow-dark), -2px -2px 4px var(--shadow-light);
+      transform: translateY(-1px);
+    }
+
+    .saved-plan-item.active {
+      background: linear-gradient(135deg, var(--accent-blue), #5dade2);
+      color: white;
+    }
+
+    /* Loading State */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(52, 152, 219, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent-blue);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .neomorph-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .neomorph-btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="container">
+  <h1 class="mb-3">800m 4-Week Training Block Planner</h1>
+
+  <!-- ---------------- Profile ---------------- -->
+  <div class="row mb-4 profile-row">
+    <div class="col-md-6">
+      <div class="neomorph-card">
+        <h5>Athlete Profile</h5>
+        <div class="mb-3">
+          <label for="pr800" class="form-label">800 m PR (m:ss)</label>
+          <input type="text" class="neomorph-input form-control" id="pr800" value="1:50" pattern="[0-9]:[0-5][0-9]">
+        </div>
+        <div class="mb-3">
+          <label for="weeklyMileage" class="form-label">Current Weekly Mileage (km)</label>
+          <input type="number" class="neomorph-input form-control" id="weeklyMileage" value="50" min="20" max="120">
+        </div>
+        <div class="mb-3">
+          <label for="intensity" class="form-label">Training Intensity</label>
+          <select class="neomorph-input form-control" id="intensity">
+            <option value="normal">Normal (2 hard AM + 2 hard PM)</option>
+            <option value="easy">Easy (1 hard AM + 1 hard PM)</option>
+            <option value="hard">Hard (3 hard AM + 3 hard PM)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="neomorph-card">
+        <h5>Training Paces (per km)</h5>
+        <div class="neomorph-inset flex-grow-1">
+          <div id="paceDisplay"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- Saved Plans ---------------- -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="neomorph-card">
+        <h5>Saved Plans</h5>
+        <div id="savedPlansContainer">
+          <p class="text-muted">No saved plans yet. Generate and save your first plan!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- Buttons ---------------- -->
+  <div class="mb-4 text-center">
+    <button id="genBtn" class="neomorph-btn primary">
+      <span id="genBtnText">Generate New Plan</span>
+      <span id="genBtnSpinner" class="spinner d-none"></span>
+    </button>
+    <button id="saveBtn" class="neomorph-btn success">Save Current Plan</button>
+    <button id="loadBtn" class="neomorph-btn">Load Saved Plan</button>
+    <button id="clearBtn" class="neomorph-btn"
+      style="background: linear-gradient(135deg, var(--accent-red), #ec7063); color: white;">Clear All Plans</button>
+  </div>
+
+  <!-- ---------------- Plan Table ---------------- -->
+  <div class="neomorph-card">
+    <h5>Training Plan</h5>
+    <div class="table-responsive">
+      <table id="planTable" class="table plan-table">
+        <thead>
+          <tr>
+            <th width="10%">Week / Day</th>
+            <th width="35%">AM Session (Aerobic)</th>
+            <th width="35%">PM Session (Speed / Power)</th>
+            <th width="10%">km</th>
+            <th width="10%">Load</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ---------------- Chart ---------------- -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="neomorph-card">
+        <h5>Training Load Visualization</h5>
+        <canvas id="mileageChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workout Info Modal -->
+  <div class="modal fade" id="workoutModal" tabindex="-1" aria-labelledby="workoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="workoutModalLabel">Workout Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="workoutModalContent"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="neomorph-btn" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <script>
+    /* ----------------------------------------------------------- *
+     * 1.  Pace calculator                                         *
+     * ----------------------------------------------------------- */
+    class PaceCalculator {
+      constructor(prText) {
+        const [m, s] = prText.split(':').map(Number);
+        this.raceTime = m * 60 + s;
+        this.raceSpeed = 800 / this.raceTime;
+        this.paces = {
+          easy: this.mk(0.53),      // More conservative easy pace
+          steady: this.mk(0.60),    // More conservative steady pace  
+          threshold: this.mk(0.65), // Slightly more conservative threshold
+          vo2max: this.mk(0.75),
+          race: this.mk(1.00),
+          speed: this.mk(1.10)
+        };
+      }
+      mk(f) {
+        const sp = this.raceSpeed * f;
+        const sec = 1000 / sp;
+        return { paceKm: sec, paceKmText: this.fmt(sec) };
+      }
+      fmt(sec) {
+        const m = Math.floor(sec / 60), s = Math.round(sec % 60);
+        return `${m}:${s.toString().padStart(2, '0')}`;
+      }
+    }
+
+    /* ----------------------------------------------------------- *
+     * 2.  Workout library (unchanged distances – we’ll tweak km   *
+     *     later only for Tier-1 runs)                             *
+     * ----------------------------------------------------------- */
+    const workouts = {
+      am: {
+        easy: {
+          recovery: { name: 'Recovery Run', sets: [{ type: 'continuous', distance: 8, pace: 'easy' }] },
+          long: { name: 'Long Run', sets: [{ type: 'continuous', distance: 15, pace: 'easy' }] },
+          progression: {
+            name: 'Progression Run',
+            sets: [{ type: 'continuous', distance: 4, pace: 'easy' },
+            { type: 'continuous', distance: 4, pace: 'steady' },
+            { type: 'continuous', distance: 3, pace: 'threshold' }]
+          },
+          steady: { name: 'Steady Run', sets: [{ type: 'continuous', distance: 10, pace: 'steady' }] },
+          fartlek: {
+            name: 'Aerobic Fartlek',
+            sets: [
+              { type: 'continuous', distance: 2, pace: 'easy' },
+              { type: 'interval', reps: 8, distance: 0.2, pace: 'steady', rest: 60 },
+              { type: 'continuous', distance: 2, pace: 'easy' }
+            ]
+          },
+          negative: {
+            name: 'Negative Split Long',
+            sets: [
+              { type: 'continuous', distance: 8, pace: 'easy' },
+              { type: 'continuous', distance: 7, pace: 'steady' }
+            ]
+          },
+          double_progression: {
+            name: 'Double Progression',
+            sets: [
+              { type: 'continuous', distance: 3, pace: 'easy' },
+              { type: 'continuous', distance: 3, pace: 'steady' },
+              { type: 'continuous', distance: 2, pace: 'threshold' },
+              { type: 'continuous', distance: 2, pace: 'vo2max' }
+            ]
+          }
+        },
+        tempo: {
+          continuous: { name: 'Tempo', sets: [{ type: 'continuous', distance: 6, pace: 'threshold' }] },
+          intervals: { name: 'Threshold Ints', sets: [{ type: 'interval', reps: 4, distance: 1, pace: 'threshold', rest: 60 }] },
+          cruise: { name: 'Cruise Ints', sets: [{ type: 'interval', reps: 3, distance: 1.5, pace: 'threshold', rest: 90 }] },
+          longIntervals1: { name: '5x1.5k @ Thresh', sets: [{ type: 'interval', reps: 5, distance: 1.5, pace: 'threshold', rest: 120 }] },
+          longIntervals2: { name: '3x3k @ Thresh', sets: [{ type: 'interval', reps: 3, distance: 3, pace: 'threshold', rest: 180 }] },
+          longIntervals3: { name: '3x(1.2kOBLA+1.2kJog)', sets: [{ type: 'interval', reps: 3, distance: 1.2, pace: 'threshold', rest: 0 }, { type: 'interval', reps: 3, distance: 1.2, pace: 'easy', rest: 120 }] },
+          pyramid: {
+            name: 'Threshold Pyramid',
+            sets: [
+              { type: 'interval', reps: 1, distance: 0.8, pace: 'threshold', rest: 90 },
+              { type: 'interval', reps: 1, distance: 1.2, pace: 'threshold', rest: 120 },
+              { type: 'interval', reps: 1, distance: 1.6, pace: 'threshold', rest: 150 },
+              { type: 'interval', reps: 1, distance: 1.2, pace: 'threshold', rest: 120 },
+              { type: 'interval', reps: 1, distance: 0.8, pace: 'threshold', rest: 90 }
+            ]
+          },
+          cutdown: {
+            name: 'Threshold Cutdown',
+            sets: [
+              { type: 'interval', reps: 1, distance: 2, pace: 'threshold', rest: 120 },
+              { type: 'interval', reps: 1, distance: 1.5, pace: 'threshold', rest: 120 },
+              { type: 'interval', reps: 1, distance: 1, pace: 'threshold', rest: 120 },
+              { type: 'interval', reps: 1, distance: 0.8, pace: 'threshold', rest: 120 }
+            ]
+          },
+          tempo_fartlek: {
+            name: 'Tempo Fartlek',
+            sets: [
+              { type: 'continuous', distance: 2, pace: 'steady' },
+              { type: 'interval', reps: 6, distance: 0.4, pace: 'threshold', rest: 90 },
+              { type: 'continuous', distance: 2, pace: 'steady' }
+            ]
+          },
+          alternating: { name: 'Alternating Tempos', sets: [{ type: 'interval', reps: 6, distance: 0.8, pace: 'threshold', rest: 45 }] },
+          mixed: {
+            name: 'Mixed Threshold',
+            sets: [
+              { type: 'interval', reps: 2, distance: 1, pace: 'threshold', rest: 90 },
+              { type: 'interval', reps: 4, distance: 0.4, pace: 'threshold', rest: 45 },
+              { type: 'interval', reps: 1, distance: 2, pace: 'threshold', rest: 0 }
+            ]
+          }
+        },
+        vo2max: {
+          classic: { name: 'VO₂ Intervals', sets: [{ type: 'interval', reps: 5, distance: 0.8, pace: 'vo2max', rest: 120 }] },
+          ladder: {
+            name: 'VO₂ Ladder', sets: [
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'vo2max', rest: 90 },
+              { type: 'interval', reps: 1, distance: 0.6, pace: 'vo2max', rest: 120 },
+              { type: 'interval', reps: 1, distance: 0.8, pace: 'vo2max', rest: 150 },
+              { type: 'interval', reps: 1, distance: 0.6, pace: 'vo2max', rest: 120 },
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'vo2max', rest: 90 }
+            ]
+          },
+          short: { name: 'Short VO₂', sets: [{ type: 'interval', reps: 8, distance: 0.4, pace: 'vo2max', rest: 90 }] },
+          long: { name: 'Long VO₂', sets: [{ type: 'interval', reps: 3, distance: 1.2, pace: 'vo2max', rest: 240 }] },
+          descending: {
+            name: 'VO₂ Descending',
+            sets: [
+              { type: 'interval', reps: 1, distance: 1, pace: 'vo2max', rest: 180 },
+              { type: 'interval', reps: 1, distance: 0.8, pace: 'vo2max', rest: 150 },
+              { type: 'interval', reps: 1, distance: 0.6, pace: 'vo2max', rest: 120 },
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'vo2max', rest: 90 },
+              { type: 'interval', reps: 1, distance: 0.2, pace: 'vo2max', rest: 60 }
+            ]
+          },
+          mixed_vo2: {
+            name: 'Mixed VO₂ Max',
+            sets: [
+              { type: 'interval', reps: 3, distance: 0.6, pace: 'vo2max', rest: 120 },
+              { type: 'interval', reps: 3, distance: 0.4, pace: 'vo2max', rest: 90 },
+              { type: 'interval', reps: 2, distance: 0.8, pace: 'vo2max', rest: 150 }
+            ]
+          }
+        }
+      },
+      pm: {
+        speed: {
+          short: { name: 'Speed Dev', sets: [{ type: 'interval', reps: 6, distance: 0.1, pace: 'speed', rest: 180 }] },
+          hills: { name: 'Hill Sprints', sets: [{ type: 'interval', reps: 8, distance: 0.08, pace: 'speed', rest: 120 }] },
+          acceleration: { name: 'Acceleration', sets: [{ type: 'interval', reps: 5, distance: 0.15, pace: 'speed', rest: 150 }] },
+          flying: { name: 'Flying 60s', sets: [{ type: 'interval', reps: 6, distance: 0.06, pace: 'speed', rest: 240 }] },
+          buildups: { name: 'Build-ups', sets: [{ type: 'interval', reps: 6, distance: 0.12, pace: 'speed', rest: 120 }] },
+          strides: { name: 'Fast Strides', sets: [{ type: 'interval', reps: 8, distance: 0.1, pace: 'speed', rest: 90 }] },
+          power_speed: {
+            name: 'Power Speed',
+            sets: [
+              { type: 'interval', reps: 3, distance: 0.05, pace: 'speed', rest: 180 },
+              { type: 'interval', reps: 3, distance: 0.08, pace: 'speed', rest: 200 },
+              { type: 'interval', reps: 2, distance: 0.12, pace: 'speed', rest: 240 }
+            ]
+          }
+        },
+        race: {
+          specific: { name: 'Race-pace 300s', sets: [{ type: 'interval', reps: 3, distance: 0.3, pace: 'race', rest: 240 }] },
+          split: { name: 'Split 600s', sets: [{ type: 'interval', reps: 2, distance: 0.6, pace: 'race', rest: 360 }] },
+          broken: {
+            name: 'Broken 800', sets: [
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'race', rest: 60 },
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'race', rest: 0 }]
+          },
+          race_400s: { name: 'Race-pace 400s', sets: [{ type: 'interval', reps: 3, distance: 0.4, pace: 'race', rest: 300 }] },
+          race_200s: { name: 'Race-pace 200s', sets: [{ type: 'interval', reps: 6, distance: 0.2, pace: 'race', rest: 120 }] },
+          simulation: {
+            name: '800m Simulation',
+            sets: [
+              { type: 'interval', reps: 1, distance: 0.2, pace: 'race', rest: 30 },
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'race', rest: 60 },
+              { type: 'interval', reps: 1, distance: 0.2, pace: 'race', rest: 0 }
+            ]
+          },
+          overspeed: { name: 'Overspeed 150s', sets: [{ type: 'interval', reps: 4, distance: 0.15, pace: 'speed', rest: 240 }] },
+          race_ladder: {
+            name: 'Race Pace Ladder',
+            sets: [
+              { type: 'interval', reps: 1, distance: 0.2, pace: 'race', rest: 120 },
+              { type: 'interval', reps: 1, distance: 0.3, pace: 'race', rest: 180 },
+              { type: 'interval', reps: 1, distance: 0.4, pace: 'race', rest: 240 },
+              { type: 'interval', reps: 1, distance: 0.3, pace: 'race', rest: 180 },
+              { type: 'interval', reps: 1, distance: 0.2, pace: 'race', rest: 120 }
+            ]
+          }
+        },
+        endurance: {
+          speed_endurance: { name: 'Speed Endurance', sets: [{ type: 'interval', reps: 4, distance: 0.2, pace: 'race', rest: 180 }] },
+          special_endurance: { name: 'Special Endurance', sets: [{ type: 'interval', reps: 2, distance: 0.5, pace: 'race', rest: 300 }] },
+          lactate_tolerance: { name: 'Lactate Tolerance', sets: [{ type: 'interval', reps: 3, distance: 0.35, pace: 'race', rest: 360 }] },
+          endurance_300s: { name: 'Endurance 300s', sets: [{ type: 'interval', reps: 4, distance: 0.3, pace: 'race', rest: 200 }] },
+          progressive_endurance: {
+            name: 'Progressive Endurance',
+            sets: [
+              { type: 'interval', reps: 1, distance: 0.3, pace: 'threshold', rest: 150 },
+              { type: 'interval', reps: 1, distance: 0.3, pace: 'vo2max', rest: 180 },
+              { type: 'interval', reps: 1, distance: 0.3, pace: 'race', rest: 210 },
+              { type: 'interval', reps: 1, distance: 0.3, pace: 'speed', rest: 0 }
+            ]
+          }
+        },
+        supplementary: {
+          drills: { name: 'Drills', sets: [{ type: 'drills', duration: 20 }] },
+          strength: { name: 'Strength', sets: [{ type: 'strength', duration: 30 }] },
+          plyo: { name: 'Plyometrics', sets: [{ type: 'plyo', duration: 20 }] },
+          mobility: { name: 'Mobility', sets: [{ type: 'mobility', duration: 25 }] },
+          weights: { name: 'Weight Training', sets: [{ type: 'strength', duration: 45 }] },
+          circuit: { name: 'Circuit Training', sets: [{ type: 'strength', duration: 35 }] },
+          pool: { name: 'Pool Recovery', sets: [{ type: 'recovery', duration: 30 }] },
+          stretching: { name: 'Dynamic Stretching', sets: [{ type: 'mobility', duration: 15 }] }
+        }
+      }
+    };
+
+    /* Tier map --------------------------------------------------- */
+    function tierOf(cat) {           // return 0,1,2,3
+      if (['supplementary'].includes(cat)) return 1;
+      if (cat === 'easy') return 1;  // BUT progression runs are actually hard!
+      if (cat === 'tempo') return 2;
+      if (cat === 'vo2max') return 3;   // 3a
+      if (['speed', 'race', 'endurance'].includes(cat)) return 3; // 3b
+      return 1;
+    }
+    function isHI(cat) { return tierOf(cat) >= 2; } // Include tempo as HI
+
+    // Special function to identify hard AM sessions specifically
+    function isHardAM(workout) {
+      if (!workout) return false;
+      // Tempo and VO2max are always hard
+      if (['tempo', 'vo2max'].includes(workout.category)) return true;
+      // Progression runs are hard because they finish with threshold
+      if (workout.category === 'easy' && workout.type === 'progression') return true;
+      return false;
+    }
+
+    /* ----------------------------------------------------------- *
+     * 3.  Utility helpers                                         *
+     * ----------------------------------------------------------- */
+    const deepCopy = obj => JSON.parse(JSON.stringify(obj));
+    function randomPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function randBool(p = 0.5) { return Math.random() < p; }
+    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+    function calcLoadDist(w, paces) {
+      let km = 0, load = 0;
+      for (const s of w.sets) {
+        if (s.type === 'continuous' || s.type === 'interval') {
+          const reps = s.reps || 1;
+          km += s.distance * reps;
+          const fac = { easy: 1, steady: 1.5, threshold: 2.5, vo2max: 4, race: 5, speed: 3 }[s.pace] || 1;
+          load += s.distance * reps * fac;
+        } else if (s.duration) {
+          const fac = { drills: 0.5, strength: 1.5, plyo: 2, mobility: 0.3, recovery: 0.2 }[s.type] || 1;
+          load += s.duration * fac / 10;
+        }
+      }
+      return { km: +km.toFixed(2), load: Math.round(load * 10) };
+    }
+    function formatWorkout(w, paces) {
+      const parts = [];
+      w.sets.forEach(s => {
+        if (s.type === 'continuous') {
+          parts.push(`${s.distance.toFixed(1)} km @ ${paces.paces[s.pace].paceKmText}/km`);
+        } else if (s.type === 'interval') {
+          const dTxt = s.distance >= 1 ? `${s.distance.toFixed(1)} km` : `${Math.round(s.distance * 1000)} m`;
+          parts.push(`${s.reps}×${dTxt} @ ${paces.paces[s.pace].paceKmText}/km (${s.rest}s)`);
+        } else if (s.duration) {
+          parts.push(`${s.duration} min`);
+        }
+      });
+      return parts.join(' + ');
+    }
+
+    /* ----------------------------------------------------------- *
+     * 4.  Week generation with safety rules                       *
+     * ----------------------------------------------------------- */
+    const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const dayShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    function generate4WeekBlock(targetKmBase, intensity) {
+      const miles = [targetKmBase,
+        Math.round(targetKmBase * 1.10),
+        Math.round(targetKmBase * 1.15),
+        Math.round(targetKmBase * 0.70)];
+      const plan = [];
+      for (let w = 0; w < 4; w++) {
+        let weekPlan = null, attempt = 0;
+        while (!weekPlan && attempt < 40) {
+          const wp = generateWeek(miles[w], intensity, w);
+          if (validateWeek(wp, miles[w], intensity)) weekPlan = wp;
+          attempt++;
+        }
+        plan.push(weekPlan);    // if fails after attempts, we still push last
+      }
+      return { plan, mileage: miles };
+    }
+
+    /* ---- core week builder ------------------------------------ */
+    function generateWeek(targetKm, intensity, weekIndex) {
+      const week = {}; DAYS.forEach(d => week[d] = null);
+
+      /* --- intensity-based hard session counts --- */
+      const sessionCounts = {
+        easy: { hardAM: 1, hardPM: 1 },
+        normal: { hardAM: 2, hardPM: 2 },
+        hard: { hardAM: 3, hardPM: 3 }
+      }[intensity];
+
+      /* --- rest days ------------------------------------------------ */
+      // Sunday is the only full recovery day
+      week.sunday = { am: null, pm: null };
+
+      /* --- long run (Tier-1) on Saturday AM ----------------------- */
+      week.saturday = { am: createWorkout('am', 'easy.long'), pm: null };
+
+      /* --- schedule HI sessions ------------------------------------ */
+      const HI_days = ['saturday']; // Saturday already has long run
+
+      // Define all hard AM workouts
+      const hardAMWorkouts = [
+        'am.tempo.continuous', 'am.tempo.intervals', 'am.tempo.cruise',
+        'am.tempo.longIntervals1', 'am.tempo.longIntervals2', 'am.tempo.longIntervals3',
+        'am.tempo.pyramid', 'am.tempo.cutdown', 'am.tempo.tempo_fartlek',
+        'am.tempo.alternating', 'am.tempo.mixed',
+        'am.vo2max.classic', 'am.vo2max.ladder', 'am.vo2max.short',
+        'am.vo2max.long', 'am.vo2max.descending', 'am.vo2max.mixed_vo2',
+        'am.easy.progression', 'am.easy.double_progression'
+      ];
+
+      // Define all hard PM workouts
+      const hardPMWorkouts = [
+        'pm.speed.short', 'pm.speed.hills', 'pm.speed.acceleration',
+        'pm.speed.flying', 'pm.speed.buildups', 'pm.speed.strides', 'pm.speed.power_speed',
+        'pm.race.specific', 'pm.race.split', 'pm.race.broken', 'pm.race.race_400s',
+        'pm.race.race_200s', 'pm.race.simulation', 'pm.race.overspeed', 'pm.race.race_ladder',
+        'pm.endurance.speed_endurance', 'pm.endurance.special_endurance',
+        'pm.endurance.lactate_tolerance', 'pm.endurance.endurance_300s', 'pm.endurance.progressive_endurance'
+      ];
+
+      // Schedule hard AM sessions
+      const availableDays = shuffle(DAYS.slice(0, 6)); // Mon-Sat, shuffled
+      let hardAMCount = 0;
+      let hardPMCount = 0;
+
+      // Schedule hard AM sessions
+      for (let i = 0; i < availableDays.length && hardAMCount < sessionCounts.hardAM; i++) {
+        const day = availableDays[i];
+
+        // Skip if day already filled
+        if (week[day]) continue;
+
+        // Avoid adjacent hard days when possible
+        let canPlace = true;
+        const dayIndex = DAYS.indexOf(day);
+        if (HI_days.length > 1) {
+          const hasAdjacentHI = HI_days.some(hiDay => {
+            const hiIndex = DAYS.indexOf(hiDay);
+            return Math.abs(dayIndex - hiIndex) <= 1;
+          });
+          // Only block if we have better options available
+          if (hasAdjacentHI && hardAMCount < sessionCounts.hardAM &&
+            availableDays.slice(i + 1).some(d => !week[d])) {
+            canPlace = false;
+          }
+        }
+
+        if (!canPlace) continue;
+
+        // Pick random hard AM workout
+        const workoutPath = randomPick(hardAMWorkouts);
+        const [slot, category, type] = workoutPath.split('.');
+
+        week[day] = {
+          am: createWorkout('am', `${category}.${type}`),
+          pm: null // Will be filled later
+        };
+
+        HI_days.push(day);
+        hardAMCount++;
+      }
+
+      // Schedule hard PM sessions (including Saturday PM now)
+      const pmAvailableDays = shuffle(DAYS.slice(0, 7)); // Mon-Sun, including Saturday
+      for (let i = 0; i < pmAvailableDays.length && hardPMCount < sessionCounts.hardPM; i++) {
+        const day = pmAvailableDays[i];
+
+        // Skip Sunday (full rest day)
+        if (day === 'sunday') continue;
+
+        // Skip if day already has PM session filled
+        if (week[day] && week[day].pm) continue;
+
+        // For Saturday, we can add PM session to existing AM long run
+        // For other days, check if they're available or create new entry
+        if (!week[day]) {
+          week[day] = { am: null, pm: null };
+        }
+
+        // Avoid too many adjacent hard days when possible
+        let canPlace = true;
+        const dayIndex = DAYS.indexOf(day);
+        if (HI_days.length > 2) {
+          const adjacentHICount = HI_days.filter(hiDay => {
+            const hiIndex = DAYS.indexOf(hiDay);
+            return Math.abs(dayIndex - hiIndex) <= 1;
+          }).length;
+
+          // Only block if we have many adjacent days and better options
+          if (adjacentHICount >= 2 && hardPMCount < sessionCounts.hardPM &&
+            pmAvailableDays.slice(i + 1).some(d => d !== 'sunday' && (!week[d] || !week[d].pm))) {
+            canPlace = false;
+          }
+        }
+
+        if (!canPlace) continue;
+
+        // Pick random hard PM workout
+        const workoutPath = randomPick(hardPMWorkouts);
+        const [slot, category, type] = workoutPath.split('.');
+
+        week[day].pm = createWorkout('pm', `${category}.${type}`);
+
+        // Add easy AM run if day doesn't have AM session
+        if (!week[day].am) {
+          week[day].am = createWorkout('am', 'easy.recovery');
+        }
+
+        if (!HI_days.includes(day)) {
+          HI_days.push(day);
+        }
+        hardPMCount++;
+      }
+
+      // Ensure exactly 2 plyometrics sessions per week - not on consecutive days
+      let plyoCount = 0;
+      const availablePlyoDays = [];
+
+      DAYS.forEach(day => {
+        if (week[day] && week[day].pm && week[day].pm.category !== 'supplementary') {
+          // Skip days that already have hard PM sessions
+        } else if (week[day] && !week[day].pm) {
+          availablePlyoDays.push(day);
+        }
+      });
+
+      // Place plyometrics ensuring no consecutive days
+      const shuffledPlyoDays = shuffle([...availablePlyoDays]);
+      for (let i = 0; i < shuffledPlyoDays.length && plyoCount < 2; i++) {
+        const day = shuffledPlyoDays[i];
+        const dayIndex = DAYS.indexOf(day);
+
+        // Check if previous or next day already has plyometrics
+        const hasAdjacentPlyo = DAYS.some((checkDay, checkIndex) => {
+          if (Math.abs(checkIndex - dayIndex) === 1) {
+            return week[checkDay] && week[checkDay].pm && week[checkDay].pm.type === 'plyo';
+          }
+          return false;
+        });
+
+        if (!hasAdjacentPlyo) {
+          week[day].pm = createWorkout('pm', 'supplementary.plyo');
+          plyoCount++;
+        }
+      }
+
+      // Fill remaining days and ensure plyometrics placement
+      DAYS.forEach(day => {
+        if (day === 'sunday') return; // Sunday stays full rest
+
+        if (!week[day]) {
+          week[day] = { am: null, pm: null };
+        }
+
+        // Fill AM if empty
+        if (!week[day].am) {
+          week[day].am = createWorkout('am', 'easy.recovery');
+        }
+
+        // Fill PM if empty with supplementary work (but not plyometrics if we have enough)
+        if (!week[day].pm) {
+          if (plyoCount < 2) {
+            const dayIndex = DAYS.indexOf(day);
+            // Check if previous or next day already has plyometrics
+            const hasAdjacentPlyo = DAYS.some((checkDay, checkIndex) => {
+              if (Math.abs(checkIndex - dayIndex) === 1) {
+                return week[checkDay] && week[checkDay].pm && week[checkDay].pm.type === 'plyo';
+              }
+              return false;
+            });
+
+            if (!hasAdjacentPlyo) {
+              week[day].pm = createWorkout('pm', 'supplementary.plyo');
+              plyoCount++;
+            } else {
+              // Choose between drills and strength if can't place plyometrics
+              const supplementaryOptions = ['supplementary.drills', 'supplementary.strength', 'supplementary.mobility'];
+              week[day].pm = createWorkout('pm', randomPick(supplementaryOptions));
+            }
+          } else {
+            // Choose between drills and strength
+            const supplementaryOptions = ['supplementary.drills', 'supplementary.strength', 'supplementary.mobility'];
+            week[day].pm = createWorkout('pm', randomPick(supplementaryOptions));
+          }
+        }
+      });
+
+      // If we still don't have enough plyometrics, try to replace some supplementary sessions
+      if (plyoCount < 2) {
+        const supplementaryDays = [];
+        DAYS.forEach(day => {
+          if (week[day] && week[day].pm && week[day].pm.category === 'supplementary' &&
+            week[day].pm.type !== 'plyo') {
+            const dayIndex = DAYS.indexOf(day);
+            // Check if previous or next day already has plyometrics
+            const hasAdjacentPlyo = DAYS.some((checkDay, checkIndex) => {
+              if (Math.abs(checkIndex - dayIndex) === 1) {
+                return week[checkDay] && week[checkDay].pm && week[checkDay].pm.type === 'plyo';
+              }
+              return false;
+            });
+
+            if (!hasAdjacentPlyo) {
+              supplementaryDays.push(day);
+            }
+          }
+        });
+
+        // Replace random supplementary sessions with plyometrics
+        while (plyoCount < 2 && supplementaryDays.length > 0) {
+          const day = supplementaryDays.splice(Math.floor(Math.random() * supplementaryDays.length), 1)[0];
+          week[day].pm = createWorkout('pm', 'supplementary.plyo');
+          plyoCount++;
+        }
+      }
+
+      /* --- mileage balancing – only stretch/shrink Tier-1 runs ----- */
+      let totalKm = weekDistance(week);
+      let diff = +(targetKm - totalKm).toFixed(1);
+      if (Math.abs(diff) > 0.01) {
+        const tier1Slots = [];
+        DAYS.forEach(d => {
+          ['am', 'pm'].forEach(slot => {
+            const w = week[d][slot];
+            if (w && tierOf(w.category) === 1 && w.sets[0] && w.sets[0].type === 'continuous') tier1Slots.push(w);
+          });
+        });
+        let idx = 0;
+        while (Math.abs(diff) > 0.01 && idx < tier1Slots.length) {
+          const w = tier1Slots[idx];
+          const maxChange = w.sets[0].distance * 0.25;              // ±25 %
+          const adj = Math.min(Math.abs(diff), maxChange) * (diff > 0 ? 1 : -1);
+          w.sets[0].distance = Math.max(2, +(w.sets[0].distance + adj).toFixed(1));
+          Object.assign(w, calcLoadDist(w, currentPaces));
+          diff = +(targetKm - weekDistance(week)).toFixed(1);
+          idx = (idx + 1) % tier1Slots.length;
+        }
+      }
+      return week;
+    }
+
+    /* ---- create deep-copy workout + metadata -------------------- */
+    function createWorkout(slot, path) { // slot 'am'/'pm', path like 'easy.recovery'
+      const [cat, type] = path.split('.');
+      const src = workouts[slot][cat][type];
+      const wObj = deepCopy(src);
+      wObj.category = cat; wObj.type = type;
+      Object.assign(wObj, calcLoadDist(wObj, currentPaces));
+      return wObj;
+    }
+
+    /* ---- week metrics ------------------------------------------- */
+    function weekDistance(week) {
+      let km = 0; DAYS.forEach(d => {
+        const day = week[d];
+        if (day) {
+          ['am', 'pm'].forEach(s => { if (day[s]) km += day[s].km; });
+        }
+      });
+      return +km.toFixed(1);
+    }
+    function countHI(week) {
+      let n = 0; DAYS.forEach(d => {
+        const day = week[d]; if (!day) return;
+        ['am', 'pm'].forEach(s => { if (day[s] && isHI(day[s].category)) n++; });
+      });
+      return n;
+    }
+
+    /* ---- validation --------------------------------------------- */
+    function validateWeek(week, targetKm, intensity) {
+      // Count hard AM and PM sessions separately
+      let hardAM = 0, hardPM = 0, plyoCount = 0;
+      DAYS.forEach(d => {
+        const day = week[d];
+        if (!day) return;
+
+        // Count hard AM sessions (tempo, vo2max, progression)
+        if (day.am && isHardAM(day.am)) hardAM++;
+
+        // Count hard PM sessions (speed, race, endurance) 
+        if (day.pm && ['speed', 'race', 'endurance'].includes(day.pm.category)) hardPM++;
+
+        // Count plyometrics sessions
+        if (day.pm && day.pm.type === 'plyo') plyoCount++;
+      });
+
+      // Get expected session counts based on intensity
+      const sessionCounts = {
+        easy: { hardAM: 1, hardPM: 1 },
+        normal: { hardAM: 2, hardPM: 2 },
+        hard: { hardAM: 3, hardPM: 3 }
+      }[intensity];
+
+      // Validate hard session counts (allow some flexibility for AM, strict for PM)
+      if (hardAM < Math.max(1, sessionCounts.hardAM - 1)) return false;
+      if (hardPM < sessionCounts.hardPM) return false; // Strict check for PM sessions
+      if (hardAM > sessionCounts.hardAM + 1 || hardPM > sessionCounts.hardPM + 1) return false;
+
+      // Must have exactly 2 plyometrics sessions
+      if (plyoCount !== 2) return false;
+
+      // Check that plyometrics are not on consecutive days
+      let prevDayHadPlyo = false;
+      for (let i = 0; i < DAYS.length; i++) {
+        const day = DAYS[i];
+        const currentDayHasPlyo = week[day] && week[day].pm && week[day].pm.type === 'plyo';
+
+        if (currentDayHasPlyo && prevDayHadPlyo) {
+          return false; // Consecutive plyometrics days not allowed
+        }
+
+        prevDayHadPlyo = currentDayHasPlyo;
+      }
+
+      // Check mileage is within 15% of target (more flexible)
+      const km = weekDistance(week);
+      if (Math.abs(km - targetKm) / targetKm > 0.15) return false;
+
+      return true;
+    }
+
+    /* ----------------------------------------------------------- *
+     * 5.  UI: paces table, planner rendering, chart               *
+     * ----------------------------------------------------------- */
+    let currentPaces, currentPlan, mileageChart;
+
+    // Cookie/localStorage management
+    const STORAGE_KEY = '800m_training_plans';
+    const PROFILE_KEY = '800m_athlete_profile';
+
+    function saveAthleteProfile() {
+      const profile = {
+        pr800: document.getElementById('pr800').value,
+        weeklyMileage: document.getElementById('weeklyMileage').value,
+        intensity: document.getElementById('intensity').value,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+    }
+
+    function loadAthleteProfile() {
+      try {
+        const saved = localStorage.getItem(PROFILE_KEY);
+        if (saved) {
+          const profile = JSON.parse(saved);
+          document.getElementById('pr800').value = profile.pr800 || '1:50';
+          document.getElementById('weeklyMileage').value = profile.weeklyMileage || '50';
+          document.getElementById('intensity').value = profile.intensity || 'normal';
+          return true;
+        }
+      } catch (e) {
+        console.log('Could not load athlete profile:', e);
+      }
+      return false;
+    }
+
+    function savePlanToStorage(planData) {
+      const savedPlans = getSavedPlans();
+      const planId = Date.now().toString();
+      const planWithId = {
+        id: planId,
+        name: `Plan ${new Date().toLocaleDateString()} - ${planData.athlete.pr800}`,
+        timestamp: new Date().toISOString(),
+        ...planData
+      };
+      savedPlans.push(planWithId);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPlans));
+      updateSavedPlansDisplay();
+      return planId;
+    }
+
+    function getSavedPlans() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadPlanFromStorage(planId) {
+      const savedPlans = getSavedPlans();
+      return savedPlans.find(plan => plan.id === planId);
+    }
+
+    function deletePlanFromStorage(planId) {
+      const savedPlans = getSavedPlans();
+      const filtered = savedPlans.filter(plan => plan.id !== planId);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+      updateSavedPlansDisplay();
+    }
+
+    function clearAllPlans() {
+      localStorage.removeItem(STORAGE_KEY);
+      updateSavedPlansDisplay();
+    }
+
+    function updateSavedPlansDisplay() {
+      const container = document.getElementById('savedPlansContainer');
+      const savedPlans = getSavedPlans();
+
+      if (savedPlans.length === 0) {
+        container.innerHTML = '<p class="text-muted">No saved plans yet. Generate and save your first plan!</p>';
+        return;
+      }
+
+      let html = '<div class="row">';
+      savedPlans.slice(-6).reverse().forEach((plan, index) => {
+        html += `
+          <div class="col-md-4 mb-2">
+            <div class="saved-plan-item" data-plan-id="${plan.id}">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>${plan.athlete.pr800} PR</strong><br>
+                  <small>${plan.athlete.weeklyMileage}km/week - ${plan.athlete.intensity}</small><br>
+                  <small class="text-muted">${new Date(plan.timestamp).toLocaleDateString()}</small>
+                </div>
+                <div>
+                  <button class="btn btn-sm btn-outline-primary load-plan-btn" data-plan-id="${plan.id}">Load</button>
+                  <button class="btn btn-sm btn-outline-danger delete-plan-btn" data-plan-id="${plan.id}">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+
+      // Add event listeners
+      container.querySelectorAll('.load-plan-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const planId = btn.dataset.planId;
+          loadAndDisplayPlan(planId);
+        });
+      });
+
+      container.querySelectorAll('.delete-plan-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const planId = btn.dataset.planId;
+          if (confirm('Delete this saved plan?')) {
+            deletePlanFromStorage(planId);
+          }
+        });
+      });
+    }
+
+    function loadAndDisplayPlan(planId) {
+      const plan = loadPlanFromStorage(planId);
+      if (!plan) return;
+
+      // Update form values
+      document.getElementById('pr800').value = plan.athlete.pr800;
+      document.getElementById('weeklyMileage').value = plan.athlete.weeklyMileage;
+      document.getElementById('intensity').value = plan.athlete.intensity;
+
+      // Save the loaded profile as current profile
+      saveAthleteProfile();
+
+      // Update paces and display plan
+      updatePaces();
+      currentPlan = plan.plan;
+      displayCurrentPlan();
+
+      // Highlight active plan
+      document.querySelectorAll('.saved-plan-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      const activeItem = document.querySelector(`[data-plan-id="${planId}"]`);
+      if (activeItem) activeItem.classList.add('active');
+    }
+
+    // Workout explanations
+    const workoutExplanations = {
+      'Recovery Run': {
+        purpose: 'Active recovery and base building',
+        description: 'Easy-paced run to promote blood flow and recovery while maintaining aerobic base. Should feel comfortable and conversational.',
+        intensity: 'Very Easy',
+        benefits: ['Improved recovery', 'Aerobic base building', 'Injury prevention']
+      },
+      'Long Run': {
+        purpose: 'Aerobic capacity and endurance development',
+        description: 'Extended easy-paced run to build aerobic capacity, improve fat utilization, and develop mental toughness.',
+        intensity: 'Easy',
+        benefits: ['Increased aerobic capacity', 'Improved fat oxidation', 'Mental toughness', 'Capillary density']
+      },
+      'Progression Run': {
+        purpose: 'Aerobic power and race simulation',
+        description: 'Starts easy and progressively increases pace through steady to threshold. Teaches race pacing and develops aerobic power.',
+        intensity: 'Easy to Hard',
+        benefits: ['Race pacing practice', 'Aerobic power', 'Mental preparation', 'Lactate clearance']
+      },
+      'Steady Run': {
+        purpose: 'Aerobic threshold development',
+        description: 'Comfortably hard pace that develops aerobic capacity while staying below lactate threshold.',
+        intensity: 'Moderate',
+        benefits: ['Aerobic threshold', 'Improved running economy', 'Base building']
+      },
+      'Aerobic Fartlek': {
+        purpose: 'Aerobic power with varied pace changes',
+        description: 'Playful speed work within aerobic range. Develops ability to change pace and improves running economy.',
+        intensity: 'Easy to Moderate',
+        benefits: ['Pace change ability', 'Running economy', 'Mental freshness', 'Aerobic power']
+      },
+      'Negative Split Long': {
+        purpose: 'Progressive endurance and pacing',
+        description: 'Long run that starts easy and finishes at steady pace. Develops endurance while practicing negative split racing strategy.',
+        intensity: 'Easy to Moderate',
+        benefits: ['Endurance development', 'Negative split practice', 'Mental discipline', 'Aerobic capacity']
+      },
+      'Double Progression': {
+        purpose: 'Multi-pace endurance development',
+        description: 'Progressive run through multiple pace zones from easy to VO₂max. Develops broad aerobic and anaerobic capacity.',
+        intensity: 'Easy to Very Hard',
+        benefits: ['Multi-system development', 'Pace judgment', 'Mental toughness', 'Broad fitness']
+      },
+      'Tempo': {
+        purpose: 'Lactate threshold development',
+        description: 'Sustained effort at lactate threshold pace. Key workout for 800m runners to improve lactate clearance.',
+        intensity: 'Hard',
+        benefits: ['Lactate threshold', 'Metabolic efficiency', 'Race pace endurance']
+      },
+      'Threshold Ints': {
+        purpose: 'Lactate threshold with recovery',
+        description: 'Broken threshold work allowing brief recovery. Enables more total volume at threshold pace.',
+        intensity: 'Hard',
+        benefits: ['Lactate buffering', 'Threshold endurance', 'Mental toughness']
+      },
+      'Cruise Ints': {
+        purpose: 'Extended threshold intervals',
+        description: 'Longer threshold intervals (1.5k) with moderate recovery. Builds threshold endurance and lactate clearance.',
+        intensity: 'Hard',
+        benefits: ['Threshold endurance', 'Lactate clearance', 'Mental toughness', 'Aerobic power']
+      },
+      '5x1.5k @ Thresh': {
+        purpose: 'High-volume threshold training',
+        description: 'High volume of threshold work to maximize lactate threshold adaptations. Develops race-specific endurance.',
+        intensity: 'Hard',
+        benefits: ['Lactate threshold', 'High volume adaptation', 'Mental toughness', 'Endurance']
+      },
+      '3x3k @ Thresh': {
+        purpose: 'Extended threshold endurance',
+        description: 'Long threshold intervals to develop extended threshold endurance. Simulates race demands.',
+        intensity: 'Hard',
+        benefits: ['Threshold endurance', 'Race simulation', 'Mental preparation', 'Lactate buffering']
+      },
+      '3x(1.2kOBLA+1.2kJog)': {
+        purpose: 'Threshold with active recovery',
+        description: 'Threshold work paired with jogging recovery. Develops lactate clearance during active recovery.',
+        intensity: 'Hard',
+        benefits: ['Lactate clearance', 'Active recovery skills', 'Threshold endurance', 'Race simulation']
+      },
+      'Threshold Pyramid': {
+        purpose: 'Progressive threshold development',
+        description: 'Pyramid-style threshold workout building up and down in distance. Develops different aspects of threshold fitness.',
+        intensity: 'Hard',
+        benefits: ['Threshold development', 'Pace judgment', 'Mental variety', 'Progressive loading']
+      },
+      'Threshold Cutdown': {
+        purpose: 'Descending threshold intervals',
+        description: 'Decreasing distance threshold intervals. Develops ability to maintain pace as fatigue increases.',
+        intensity: 'Hard',
+        benefits: ['Pace maintenance', 'Fatigue resistance', 'Mental toughness', 'Threshold power']
+      },
+      'Tempo Fartlek': {
+        purpose: 'Mixed aerobic and threshold training',
+        description: 'Combination of steady running with threshold intervals. Develops both aerobic base and threshold power.',
+        intensity: 'Moderate to Hard',
+        benefits: ['Mixed system development', 'Pace variety', 'Aerobic-anaerobic transition', 'Mental engagement']
+      },
+      'Alternating Tempos': {
+        purpose: 'Threshold with minimal recovery',
+        description: 'Short threshold intervals with brief recovery. Develops lactate tolerance and threshold endurance.',
+        intensity: 'Hard',
+        benefits: ['Lactate tolerance', 'Threshold endurance', 'Recovery efficiency', 'Mental toughness']
+      },
+      'Mixed Threshold': {
+        purpose: 'Varied threshold training',
+        description: 'Combination of different threshold interval lengths. Develops comprehensive threshold fitness.',
+        intensity: 'Hard',
+        benefits: ['Comprehensive threshold fitness', 'Pace variety', 'Mental engagement', 'Lactate buffering']
+      },
+      'VO₂ Intervals': {
+        purpose: 'Maximal oxygen uptake development',
+        description: 'Classic VO₂max intervals to develop maximal aerobic power and improve oxygen utilization.',
+        intensity: 'Very Hard',
+        benefits: ['VO₂max improvement', 'Cardiac output', 'Oxygen utilization', 'Anaerobic capacity']
+      },
+      'VO₂ Ladder': {
+        purpose: 'Progressive VO₂max development',
+        description: 'Pyramid-style VO₂max workout building up and down in distance. Develops different aspects of aerobic power.',
+        intensity: 'Very Hard',
+        benefits: ['VO₂max development', 'Pace judgment', 'Mental toughness', 'Recovery ability']
+      },
+      'Short VO₂': {
+        purpose: 'High-intensity aerobic power',
+        description: 'Short VO₂max intervals (400m) with moderate recovery. Develops high-end aerobic power and anaerobic capacity.',
+        intensity: 'Very Hard',
+        benefits: ['High-end aerobic power', 'Anaerobic capacity', 'Neuromuscular power', 'Speed endurance']
+      },
+      'Long VO₂': {
+        purpose: 'Extended aerobic power',
+        description: 'Longer VO₂max intervals (1200m) with extended recovery. Develops sustained aerobic power.',
+        intensity: 'Very Hard',
+        benefits: ['Sustained aerobic power', 'VO₂max endurance', 'Mental toughness', 'Lactate buffering']
+      },
+      'VO₂ Descending': {
+        purpose: 'Descending VO₂max intervals',
+        description: 'Decreasing distance VO₂max intervals. Develops ability to maintain power as distance decreases.',
+        intensity: 'Very Hard',
+        benefits: ['Power maintenance', 'Speed development', 'Mental preparation', 'Neuromuscular adaptation']
+      },
+      'Mixed VO₂ Max': {
+        purpose: 'Varied VO₂max training',
+        description: 'Combination of different VO₂max interval lengths. Develops comprehensive aerobic power.',
+        intensity: 'Very Hard',
+        benefits: ['Comprehensive VO₂max fitness', 'Pace variety', 'Mental engagement', 'Broad adaptation']
+      },
+      'Speed Dev': {
+        purpose: 'Neuromuscular power and speed',
+        description: 'Short, fast efforts to develop neuromuscular power, running mechanics, and maximum speed.',
+        intensity: 'Maximal',
+        benefits: ['Max speed', 'Running mechanics', 'Neuromuscular power', 'Stride efficiency']
+      },
+      'Hill Sprints': {
+        purpose: 'Power development and injury prevention',
+        description: 'Short uphill sprints to develop power, improve running mechanics, and reduce injury risk.',
+        intensity: 'High',
+        benefits: ['Power development', 'Injury prevention', 'Running mechanics', 'Strength endurance']
+      },
+      'Acceleration': {
+        purpose: 'Acceleration and speed development',
+        description: 'Progressive acceleration runs to develop speed and running mechanics from standing start.',
+        intensity: 'High',
+        benefits: ['Acceleration ability', 'Speed development', 'Running mechanics', 'Race start practice']
+      },
+      'Flying 60s': {
+        purpose: 'Maximum speed development',
+        description: 'Short sprints with rolling start to develop maximum running speed and mechanics.',
+        intensity: 'Maximal',
+        benefits: ['Maximum speed', 'Stride mechanics', 'Neuromuscular power', 'Speed confidence']
+      },
+      'Build-ups': {
+        purpose: 'Progressive speed development',
+        description: 'Gradual acceleration runs that build to near-maximum speed. Develops speed while maintaining control.',
+        intensity: 'Moderate to High',
+        benefits: ['Speed development', 'Acceleration control', 'Running mechanics', 'Neuromuscular coordination']
+      },
+      'Fast Strides': {
+        purpose: 'Speed maintenance and mechanics',
+        description: 'Short, controlled fast runs to maintain speed and improve running mechanics.',
+        intensity: 'Moderate to High',
+        benefits: ['Speed maintenance', 'Running mechanics', 'Neuromuscular activation', 'Stride efficiency']
+      },
+      'Power Speed': {
+        purpose: 'Progressive power development',
+        description: 'Short sprints of increasing distance to develop power across different speed zones.',
+        intensity: 'High to Maximal',
+        benefits: ['Power development', 'Speed endurance', 'Progressive loading', 'Neuromuscular adaptation']
+      },
+      'Race-pace 300s': {
+        purpose: '800m race pace specificity',
+        description: 'Race pace intervals of 300m to develop speed endurance and race pace familiarity.',
+        intensity: 'Race Pace',
+        benefits: ['Race pace practice', 'Speed endurance', 'Lactate tolerance', 'Race simulation']
+      },
+      'Split 600s': {
+        purpose: '800m race simulation',
+        description: '600m efforts at race pace to simulate race demands and develop specific endurance.',
+        intensity: 'Race Pace',
+        benefits: ['Race simulation', 'Speed endurance', 'Mental preparation', 'Lactate tolerance']
+      },
+      'Broken 800': {
+        purpose: 'Race pace with brief recovery',
+        description: 'Race distance broken with short recovery to enable race pace practice with slight recovery.',
+        intensity: 'Race Pace',
+        benefits: ['Race pace endurance', 'Mental toughness', 'Lactate buffering', 'Race simulation']
+      },
+      'Race-pace 400s': {
+        purpose: '800m race pace development',
+        description: '400m intervals at 800m race pace to develop race-specific speed endurance.',
+        intensity: 'Race Pace',
+        benefits: ['Race pace familiarity', 'Speed endurance', 'Lactate tolerance', 'Pacing practice']
+      },
+      'Race-pace 200s': {
+        purpose: 'Race pace speed development',
+        description: '200m intervals at race pace to develop speed while maintaining race pace familiarity.',
+        intensity: 'Race Pace',
+        benefits: ['Race pace speed', 'Neuromuscular power', 'Speed endurance', 'Pace confidence']
+      },
+      '800m Simulation': {
+        purpose: 'Complete race simulation',
+        description: 'Broken 800m simulation with race-like splits and recoveries. Ultimate race preparation.',
+        intensity: 'Race Pace',
+        benefits: ['Complete race simulation', 'Pacing strategy', 'Mental preparation', 'Race confidence']
+      },
+      'Overspeed 150s': {
+        purpose: 'Faster than race pace speed',
+        description: '150m intervals faster than race pace to develop speed reserve and confidence.',
+        intensity: 'Faster than Race',
+        benefits: ['Speed reserve', 'Race pace confidence', 'Neuromuscular power', 'Mental preparation']
+      },
+      'Race Pace Ladder': {
+        purpose: 'Progressive race pace development',
+        description: 'Pyramid of race pace intervals building up and down. Develops comprehensive race pace fitness.',
+        intensity: 'Race Pace',
+        benefits: ['Race pace endurance', 'Progressive loading', 'Mental variety', 'Pace judgment']
+      },
+      'Speed Endurance': {
+        purpose: 'Anaerobic capacity development',
+        description: 'Short efforts at or above race pace to develop anaerobic capacity and speed endurance.',
+        intensity: 'Very High',
+        benefits: ['Anaerobic capacity', 'Speed endurance', 'Lactate tolerance', 'Power endurance']
+      },
+      'Special Endurance': {
+        purpose: 'Race-specific endurance',
+        description: 'Longer race pace efforts to develop specific endurance for 800m racing.',
+        intensity: 'Race Pace+',
+        benefits: ['Race-specific endurance', 'Lactate tolerance', 'Mental toughness', 'Speed endurance']
+      },
+      'Lactate Tolerance': {
+        purpose: 'Lactate buffering development',
+        description: 'Moderate length intervals at race pace to develop lactate tolerance and buffering capacity.',
+        intensity: 'Race Pace',
+        benefits: ['Lactate tolerance', 'Buffering capacity', 'Race preparation', 'Mental toughness']
+      },
+      'Endurance 300s': {
+        purpose: 'Speed endurance development',
+        description: '300m intervals at race pace with shorter recovery to develop speed endurance.',
+        intensity: 'Race Pace',
+        benefits: ['Speed endurance', 'Recovery efficiency', 'Lactate tolerance', 'Race simulation']
+      },
+      'Progressive Endurance': {
+        purpose: 'Multi-pace endurance development',
+        description: 'Progressive intervals through different pace zones ending at speed. Develops broad fitness.',
+        intensity: 'Moderate to Maximal',
+        benefits: ['Multi-system development', 'Progressive loading', 'Pace variety', 'Comprehensive fitness']
+      },
+      'Drills': {
+        purpose: 'Running mechanics and activation',
+        description: 'Technical drills to improve running mechanics, activate muscles, and prevent injury.',
+        intensity: 'Low',
+        benefits: ['Running mechanics', 'Neuromuscular activation', 'Injury prevention', 'Movement quality']
+      },
+      'Strength': {
+        purpose: 'Power and injury prevention',
+        description: 'Strength training to develop power, prevent injuries, and improve running economy.',
+        intensity: 'Moderate',
+        benefits: ['Power development', 'Injury prevention', 'Running economy', 'Structural strength']
+      },
+      'Plyometrics': {
+        purpose: 'Explosive power development',
+        description: 'Jump training to develop explosive power, improve running economy, and enhance speed.',
+        intensity: 'High',
+        benefits: ['Explosive power', 'Running economy', 'Speed development', 'Reactive strength']
+      },
+      'Mobility': {
+        purpose: 'Flexibility and movement quality',
+        description: 'Mobility work to maintain range of motion, prevent injury, and improve movement quality.',
+        intensity: 'Low',
+        benefits: ['Range of motion', 'Injury prevention', 'Movement quality', 'Recovery enhancement']
+      },
+      'Weight Training': {
+        purpose: 'Maximum strength development',
+        description: 'Heavy resistance training to develop maximum strength, power, and structural integrity.',
+        intensity: 'High',
+        benefits: ['Maximum strength', 'Power development', 'Bone density', 'Injury prevention']
+      },
+      'Circuit Training': {
+        purpose: 'General fitness and conditioning',
+        description: 'Circuit-based training combining strength and conditioning for general fitness development.',
+        intensity: 'Moderate to High',
+        benefits: ['General fitness', 'Work capacity', 'Muscular endurance', 'Movement variety']
+      },
+      'Pool Recovery': {
+        purpose: 'Active recovery in water',
+        description: 'Low-impact water-based recovery to promote circulation and reduce muscle tension.',
+        intensity: 'Very Low',
+        benefits: ['Active recovery', 'Reduced impact', 'Improved circulation', 'Muscle relaxation']
+      },
+      'Dynamic Stretching': {
+        purpose: 'Movement preparation',
+        description: 'Dynamic stretching routine to prepare muscles and joints for training or competition.',
+        intensity: 'Low',
+        benefits: ['Movement preparation', 'Injury prevention', 'Range of motion', 'Activation']
+      }
+    };
+
+    function showWorkoutExplanation(workoutName) {
+      const explanation = workoutExplanations[workoutName];
+      if (!explanation) {
+        document.getElementById('workoutModalContent').innerHTML =
+          `<p>No detailed explanation available for "${workoutName}".</p>`;
+      } else {
+        document.getElementById('workoutModalContent').innerHTML = `
+          <div class="neomorph-inset">
+            <h6 class="text-primary">${workoutName}</h6>
+            <p><strong>Purpose:</strong> ${explanation.purpose}</p>
+            <p><strong>Description:</strong> ${explanation.description}</p>
+            <p><strong>Intensity:</strong> <span class="badge bg-primary">${explanation.intensity}</span></p>
+            <h6 class="mt-3">Key Benefits:</h6>
+            <ul>
+              ${explanation.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      document.getElementById('workoutModalLabel').textContent = workoutName;
+      const modal = new bootstrap.Modal(document.getElementById('workoutModal'));
+      modal.show();
+    }
+
+    function updatePaces() {
+      const txt = document.getElementById('pr800').value;
+      if (!txt.match(/^\d:[0-5]\d$/)) return;
+      currentPaces = new PaceCalculator(txt);
+      const info = {
+        easy: 'Recovery & Base Building',
+        steady: 'Aerobic Development',
+        threshold: 'Lactate Threshold',
+        vo2max: 'VO₂ Max Development',
+        race: '800m Race Pace',
+        speed: 'Neuromuscular Power'
+      };
+      let html = '<table class="table table-sm pace-table"><thead><tr><th>Zone</th><th>Pace/km</th><th>Purpose</th></tr></thead><tbody>';
+      Object.entries(currentPaces.paces).forEach(([k, v]) => {
+        html += `<tr><td><strong>${k.toUpperCase()}</strong></td><td><strong>${v.paceKmText}</strong></td><td class="zone-info">${info[k]}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      document.getElementById('paceDisplay').innerHTML = html;
+    }
+
+    /* ---- render / regenerate whole plan ------------------------- */
+    function generateNewPlan() {
+      // Show loading state
+      const genBtn = document.getElementById('genBtn');
+      const genBtnText = document.getElementById('genBtnText');
+      const genBtnSpinner = document.getElementById('genBtnSpinner');
+
+      genBtn.disabled = true;
+      genBtnText.classList.add('d-none');
+      genBtnSpinner.classList.remove('d-none');
+
+      // Small delay to show loading state
+      setTimeout(() => {
+        const mileage = parseInt(document.getElementById('weeklyMileage').value);
+        const intensity = document.getElementById('intensity').value;
+        currentPlan = generate4WeekBlock(mileage, intensity);
+        displayCurrentPlan();
+
+        // Reset button state
+        genBtn.disabled = false;
+        genBtnText.classList.remove('d-none');
+        genBtnSpinner.classList.add('d-none');
+
+        // Clear active plan highlighting
+        document.querySelectorAll('.saved-plan-item').forEach(item => {
+          item.classList.remove('active');
+        });
+      }, 500);
+    }
+
+    function displayCurrentPlan() {
+      if (!currentPlan) return;
+
+      const tbody = document.querySelector('#planTable tbody');
+      tbody.innerHTML = '';
+      const weeklyTotals = [];
+
+      currentPlan.plan.forEach((week, wi) => {
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr class="week-header"><td colspan="5">Week ${wi + 1}${wi === 3 ? ' (Recovery)' : ''} – target ${currentPlan.mileage[wi]} km</td></tr>`);
+        let wKm = 0, wLoad = 0;
+
+        // Handle null weeks (when validation fails)
+        if (!week) {
+          // Create empty week display
+          DAYS.forEach((d, di) => {
+            tbody.insertAdjacentHTML('beforeend', `
+        <tr class="recovery-week">
+         <td>${dayShort[di]}</td>
+         <td>Failed to generate</td>
+         <td>Failed to generate</td>
+         <td>0.0</td><td>0</td>
+        </tr>`);
+          });
+        } else {
+          // Normal week processing
+          DAYS.forEach((d, di) => {
+            const day = week[d] || { am: null, pm: null };
+            const am = day.am, pm = day.pm;
+            const km = (am ? am.km : 0) + (pm ? pm.km : 0);
+            const load = (am ? am.load : 0) + (pm ? pm.load : 0);
+            wKm += km; wLoad += load;
+
+            // Determine individual cell styling (same for all weeks)
+            const amHardClass = (am && isHardAM(am)) ? 'hard-session' : '';
+            const pmHardClass = (pm && ['speed', 'race', 'endurance'].includes(pm.category)) ? 'hard-session' : '';
+
+            tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+         <td>${dayShort[di]}</td>
+         <td class="${amHardClass}">${am ? `<a href="#" class="workout-name" onclick="showWorkoutExplanation('${am.name.replace(/'/g, "\\'")}'); return false;"><strong>${am.name}</strong></a><br><small>${formatWorkout(am, currentPaces)}</small>` : 'Rest'}</td>
+         <td class="${pmHardClass}">${pm ? `<a href="#" class="workout-name" onclick="showWorkoutExplanation('${pm.name.replace(/'/g, "\\'")}'); return false;"><strong>${pm.name}</strong></a><br><small>${formatWorkout(pm, currentPaces)}</small>` : 'Rest'}</td>
+         <td>${km.toFixed(1)}</td><td>${load}</td>
+        </tr>`);
+          });
+        }
+        tbody.insertAdjacentHTML('beforeend',
+          `<tr class="table-secondary"><td colspan="3"><strong>Week ${wi + 1} Total</strong></td>
+       <td><strong>${wKm.toFixed(1)} km</strong></td><td><strong>${wLoad}</strong></td></tr>`);
+        weeklyTotals.push({ week: wi + 1, km: wKm, load: wLoad });
+      });
+
+      document.querySelector('#planTable tfoot').innerHTML =
+        `<tr class="totals"><td colspan="3"><strong>Block Totals</strong></td>
+      <td><strong>${weeklyTotals.reduce((s, x) => s + x.km, 0).toFixed(1)} km</strong></td>
+      <td><strong>${weeklyTotals.reduce((s, x) => s + x.load, 0)}</strong></td></tr>`;
+      drawChart(weeklyTotals);
+    }
+
+    /* ---- bar+line chart ---------------------------------------- */
+    function drawChart(wTotals) {
+      const ctx = document.getElementById('mileageChart').getContext('2d');
+      if (mileageChart) mileageChart.destroy();
+      mileageChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: wTotals.map(w => `Week ${w.week}`),
+          datasets: [{
+            label: 'Weekly km',
+            data: wTotals.map(w => w.km),
+            backgroundColor: ['rgba(52, 152, 219, 0.8)', 'rgba(52, 152, 219, 0.8)', 'rgba(52, 152, 219, 0.8)', 'rgba(243, 156, 18, 0.8)'],
+            borderColor: ['rgba(52, 152, 219, 1)', 'rgba(52, 152, 219, 1)', 'rgba(52, 152, 219, 1)', 'rgba(243, 156, 18, 1)'],
+            borderWidth: 2,
+            borderRadius: 8
+          }, {
+            label: 'Load (×10)',
+            type: 'line',
+            data: wTotals.map(w => w.load / 10),
+            borderColor: 'rgba(231, 76, 60, 1)',
+            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+            borderWidth: 3,
+            pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            tension: 0.3,
+            yAxisID: 'y1'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: 'var(--text-primary)',
+                font: { weight: 600 }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: 'var(--text-primary)', font: { weight: 600 } },
+              grid: { color: 'rgba(200, 216, 232, 0.3)' }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: 'var(--text-primary)', font: { weight: 600 } },
+              grid: { color: 'rgba(200, 216, 232, 0.3)' }
+            },
+            y1: {
+              beginAtZero: true,
+              position: 'right',
+              ticks: { color: 'var(--text-primary)', font: { weight: 600 } },
+              grid: { drawOnChartArea: false, color: 'rgba(200, 216, 232, 0.3)' }
+            }
+          }
+        }
+      });
+    }
+
+    /* ----------------------------------------------------------- *
+     * 6.  Save/Load Plans ---------------------------------------- */
+    function saveCurrentPlan() {
+      if (!currentPlan || !currentPaces) {
+        alert('Please generate a plan first!');
+        return;
+      }
+
+      const planData = {
+        athlete: {
+          pr800: document.getElementById('pr800').value,
+          weeklyMileage: document.getElementById('weeklyMileage').value,
+          intensity: document.getElementById('intensity').value
+        },
+        paces: currentPaces.paces,
+        plan: currentPlan
+      };
+
+      const planId = savePlanToStorage(planData);
+
+      // Show success message
+      const saveBtn = document.getElementById('saveBtn');
+      const originalText = saveBtn.innerHTML;
+      saveBtn.innerHTML = '✓ Saved!';
+      saveBtn.style.background = 'linear-gradient(135deg, var(--accent-green), #58d68d)';
+
+      setTimeout(() => {
+        saveBtn.innerHTML = originalText;
+        saveBtn.style.background = '';
+      }, 2000);
+    }
+
+    function downloadPlan() {
+      if (!currentPlan || !currentPaces) {
+        alert('Please generate a plan first!');
+        return;
+      }
+
+      const planData = {
+        timestamp: new Date().toISOString(),
+        athlete: {
+          pr800: document.getElementById('pr800').value,
+          weeklyMileage: document.getElementById('weeklyMileage').value,
+          intensity: document.getElementById('intensity').value
+        },
+        paces: currentPaces.paces,
+        plan: currentPlan
+      };
+
+      const blob = new Blob([JSON.stringify(planData, null, 2)], { type: 'application/json' });
+      saveAs(blob, `800m_plan_${new Date().toISOString().split('T')[0]}.json`);
+    }
+
+    /* ----------------------------------------------------------- *
+     * 7.  Init                                                     *
+     * ----------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      // Load saved athlete profile first
+      const profileLoaded = loadAthleteProfile();
+
+      updatePaces();
+      generateNewPlan(); // Generate initial plan
+      updateSavedPlansDisplay();
+
+      // Auto-save profile when any field changes
+      document.getElementById('pr800').addEventListener('input', () => {
+        updatePaces();
+        saveAthleteProfile();
+      });
+
+      document.getElementById('weeklyMileage').addEventListener('change', () => {
+        saveAthleteProfile();
+      });
+
+      document.getElementById('intensity').addEventListener('change', () => {
+        saveAthleteProfile();
+      });
+
+      // Button event listeners
+      document.getElementById('genBtn').addEventListener('click', generateNewPlan);
+      document.getElementById('saveBtn').addEventListener('click', saveCurrentPlan);
+      document.getElementById('loadBtn').addEventListener('click', () => {
+        const savedPlans = getSavedPlans();
+        if (savedPlans.length === 0) {
+          alert('No saved plans available!');
+          return;
+        }
+        // Scroll to saved plans section
+        document.getElementById('savedPlansContainer').scrollIntoView({ behavior: 'smooth' });
+      });
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        if (confirm('This will delete all saved plans. Are you sure?')) {
+          clearAllPlans();
+        }
+      });
+
+      // Add download button functionality (separate from save to browser)
+      const downloadBtn = document.createElement('button');
+      downloadBtn.className = 'neomorph-btn';
+      downloadBtn.innerHTML = 'Download JSON';
+      downloadBtn.addEventListener('click', downloadPlan);
+      document.getElementById('clearBtn').parentNode.appendChild(downloadBtn);
+
+      // Make showWorkoutExplanation globally available
+      window.showWorkoutExplanation = showWorkoutExplanation;
+
+      // Show profile loaded message if profile was restored
+      if (profileLoaded) {
+        const profileCard = document.querySelector('.neomorph-card h5');
+        if (profileCard && profileCard.textContent === 'Athlete Profile') {
+          profileCard.innerHTML = 'Athlete Profile <small class="text-success">(auto-restored)</small>';
+          setTimeout(() => {
+            profileCard.innerHTML = 'Athlete Profile';
+          }, 3000);
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
