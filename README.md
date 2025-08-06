@@ -32,7 +32,7 @@ The 4-week block follows a progressive structure:
 
 - **Weeks 1-3**: Progressive loading with increasing mileage and intensity
 - **Week 4**: Reduced mileage (70%) for recovery and adaptation
-- **Daily Structure**: 
+- **Daily Structure**:
   - AM sessions focus on aerobic development
   - PM sessions focus on speed, power, and race-specific work
   - Two plyometrics sessions per week (non-consecutive days)
@@ -41,11 +41,13 @@ The 4-week block follows a progressive structure:
 ## Workout Categories
 
 ### AM Sessions (Aerobic Focus)
+
 - **Easy**: Recovery runs, long runs, progression runs
 - **Tempo**: Threshold development intervals and continuous runs
 - **VO₂max**: High-intensity intervals for maximal oxygen uptake
 
 ### PM Sessions (Speed/Power Focus)
+
 - **Speed**: Neuromuscular development, hill sprints, acceleration work
 - **Race**: 800m-specific pace work and simulations
 - **Endurance**: Speed endurance and lactate tolerance development
@@ -54,6 +56,7 @@ The 4-week block follows a progressive structure:
 ## Pace Zones
 
 The calculator automatically determines your training paces based on your 800m PR:
+
 - **Easy**: Recovery & Base Building (53% of race speed)
 - **Steady**: Aerobic Development (60% of race speed)
 - **Threshold**: Lactate Threshold (65% of race speed)
@@ -68,13 +71,6 @@ The calculator automatically determines your training paces based on your 800m P
 - **Charts**: Chart.js for training load visualization
 - **Storage**: Local browser storage for plan persistence
 - **Responsive**: Mobile-friendly design with touch support
-
-## Browser Compatibility
-
-- Chrome 60+
-- Firefox 55+
-- Safari 12+
-- Edge 79+
 
 ## Privacy
 
